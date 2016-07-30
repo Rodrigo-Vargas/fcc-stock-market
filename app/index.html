@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>RVG Stock Market</title>
+</head>
+<body ng-app="rvgStockMarket">
+  <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
+  
+  <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular.min.js"></script>
+  <script type="text/javascript" src="core.js"></script>
+  
+  <div ng-controller="StockCtrl">
+    <a href="#" ng-click="sentMessage()">Send hello</a>
+    
+    <div ng-repeat="stock in stocks">
+      {{ stock.name }}
+
+      <div ng-repeat="value in stock.data">
+        <table>
+          <tr>
+            <td>{{ value }}</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
