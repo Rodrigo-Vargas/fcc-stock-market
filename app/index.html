@@ -11,8 +11,14 @@
   <script type="text/javascript" src="core.js"></script>
   
   <div ng-controller="StockCtrl">
-    <a href="#" ng-click="sentMessage()">Send hello</a>
+    <a href="#" ng-click="sentMessage()">Get info</a>
+    <a href="#" ng-click="addColumn()">Add column</a>
+    <a href="#" ng-click="addRows()">Add rows</a>
     
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    
+    <div id="chart_div"></div>  
+
     <div ng-repeat="stock in stocks">
       {{ stock.name }}
 
