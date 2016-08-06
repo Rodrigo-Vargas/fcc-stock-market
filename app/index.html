@@ -18,21 +18,26 @@
       .axis text {
           font-family: Lato;
           font-size: 13px;
-      }
+      } 
   </style>
   <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
   <script src="//d3js.org/d3.v3.min.js"></script>  
   <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular.min.js"></script>
   <script type="text/javascript" src="core.js"></script>
+  <script type="text/javascript" src="graphService.js"></script>
   <div class="container">
     <div class="jumbotron">
       <div ng-controller="StockCtrl">
-        <a href="#" ng-click="requestUpdate()">Get info</a>
-        
         <svg id="visualisation" width="1000" height="500"></svg>
-
+        
+        <input type="text" class="form-control" ng-model="newStock">
+        <a class="btn btn-primary" ng-click="addStock()">Add stock</a>
+  
         <div ng-repeat="stock in stocks">
-          {{ stock.name }}
+          <div>
+            {{ stock }}
+            <a class="btn btn-warning" ng-click="removeStock(stock)"></a>
+          </div>
         </div>
       </div>
     </div>
