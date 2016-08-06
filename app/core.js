@@ -32,116 +32,80 @@ angular
         options;
 
     return {
-      init: function(){
-        google.charts.load('current', {packages: ['corechart', 'line']});
-        google.charts.setOnLoadCallback(drawBackgroundColor);
-
-        function drawBackgroundColor() {
-          data = new google.visualization.DataTable();
-          data.addColumn('date', 'Date');
-          
-          options = {
-            hAxis: {
-              title: 'Time'
-            },
-            vAxis: {
-              title: 'Popularity'
-            },
-            backgroundColor: '#f1f8e9'
-          };
-
-          chart = new google.visualization.LineChart(document.getElementById('chart_div'));
-          chart.draw(data, options);
-        }
-      },
-
-      addColumn: function(columnName){
-        data.addColumn('number', columnName);
-        chart.draw(data, options);
-      },
-
-      addRow: function(newRow) {
-        var date = new Date(newRow[0]);
-        newRow[0] = date;
-
-        data.addRow(newRow);
-        chart.draw(data, options);
+      update: function(){
       }
     }
   })
-  .controller('StockCtrl', function($scope, socket, graph){
+  .controller('StockCtrl', function($scope, socket, graph, $http){
     $scope.stocks = [];
+
+    var vis = d3.select("#visualisation"),
+          WIDTH = 1000,
+          HEIGHT = 500,
+          MARGINS = {
+              top: 20,
+              right: 20,
+              bottom: 20,
+              left: 50
+          };
+    var format = d3.time.format("%Y-%m-%d");
     
-    $scope.sentMessage = function() {
+    $scope.requestUpdate = function() {
       socket.emit('addStock', "Stock one");
     }
 
     socket.on('stockList', function(stocks){
       console.log(stocks);
+      
+      stocks.forEach(function(stock){
+        $http(
+        {
+          method: 'GET',
+          url: '/api/stockInfo/' + stock
+        })
+        .then(function successCallback(response) {
+          response.data.values.forEach(function(value){
+            $scope.stocks.push(value);  
+          })
 
-      // Set the dimensions of the canvas / graph
-      var margin = {top: 30, right: 20, bottom: 30, left: 50},
-          width = 600 - margin.left - margin.right,
-          height = 270 - margin.top - margin.bottom;
+          var xScale = d3.time.scale().range([MARGINS.left, WIDTH - MARGINS.right]).domain(d3.extent($scope.stocks, function(d) { return format.parse(d.date); })),
+            
+            yScale = d3.scale.linear().range([HEIGHT - MARGINS.top, MARGINS.bottom]).domain(d3.extent($scope.stocks, function(d) { return d.stock; })),
+            xAxis = d3.svg.axis()
+            .scale(xScale),
+            yAxis = d3.svg.axis()
+            .scale(yScale)
+            .orient("left");
+        
+          vis.selectAll(".axis").remove();
+          vis.append("svg:g")
+            .attr("class", "x axis")
+            .attr("transform", "translate(0," + (HEIGHT - MARGINS.bottom) + ")")
+            .call(xAxis);
+          vis.append("svg:g")
+            .attr("class", "y axis")
+            .attr("transform", "translate(" + (MARGINS.left) + ",0)")
+            .call(yAxis);
+          var lineGen = d3.svg.line()
+            .x(function(d) {
+                console.log(d)
+                return xScale(format.parse(d.date));
+            })
+            .y(function(d) {
+                return yScale(d.stock);
+            });
 
-      // Parse the date / time
-      var parseDate = d3.time.format("%d-%b-%y").parse;
-
-      // Set the ranges
-      var x = d3.time.scale().range([0, width]);
-      var y = d3.scale.linear().range([height, 0]);
-
-      // Define the axes
-      var xAxis = d3.svg.axis().scale(x)
-          .orient("bottom").ticks(5);
-
-      var yAxis = d3.svg.axis().scale(y)
-          .orient("left").ticks(5);
-
-      // Define the line
-      var valueline = d3.svg.line()
-          .x(function(d) { return x(d.date); })
-          .y(function(d) { return y(d.close); });
-          
-      // Adds the svg canvas
-      var svg = d3.select("body")
-          .append("svg")
-              .attr("width", width + margin.left + margin.right)
-              .attr("height", height + margin.top + margin.bottom)
-          .append("g")
-              .attr("transform", 
-                    "translate(" + margin.left + "," + margin.top + ")");
-
-      // Get the data
-      d3.csv("data.csv", function(error, data) {
-          data.forEach(function(d) {
-              d.date = parseDate(d.date);
-              d.close = +d.close;
-          });
-
-          // Scale the range of the data
-          x.domain(d3.extent(data, function(d) { return d.date; }));
-          y.domain([0, d3.max(data, function(d) { return d.close; })]);
-
-          // Add the valueline path.
-          svg.append("path")
-              .attr("class", "line")
-              .attr("d", valueline(data));
-
-          // Add the X Axis
-          svg.append("g")
-              .attr("class", "x axis")
-              .attr("transform", "translate(0," + height + ")")
-              .call(xAxis);
-
-          // Add the Y Axis
-          svg.append("g")
-              .attr("class", "y axis")
-              .call(yAxis);
-
-      });
-    });
-
-    graph.init();
+            vis.append('svg:path')
+              .attr('d', lineGen(response.data.values))
+              .attr('stroke', 'green')
+              .attr('stroke-width', 2)
+              .attr('fill', 'none');
+        },
+          function errorCallback(response) {
+            alert(response);
+          }
+        );        
+      })     
+    });    
   });
   
