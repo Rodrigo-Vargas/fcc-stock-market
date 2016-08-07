@@ -12,7 +12,16 @@ routes(app);
 var server = http.createServer(app);
 server.listen(3000);
 
-var stockList = ['FB', 'TSLA'];
+var stockList = [
+                  {
+                    name : 'FB',
+                    color : '#a1a1a1',
+                  },
+                  {
+                    name : 'TSLA',
+                    color : '#b2b2b2',
+                  } 
+                  ];
 
 var io = require('socket.io')(server);
 

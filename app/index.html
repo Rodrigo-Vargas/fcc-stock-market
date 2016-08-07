@@ -8,7 +8,7 @@
   <link href="http://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
 
   <link href="http://getbootstrap.com/examples/justified-nav/justified-nav.css" rel="stylesheet">
-
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
   <style>
       .axis path {
           fill: none;
@@ -18,7 +18,12 @@
       .axis text {
           font-family: Lato;
           font-size: 13px;
-      } 
+      }
+
+      .stock-color {
+        height: 50px;
+        width: 5%;
+      }
   </style>
   <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
   <script src="//d3js.org/d3.v3.min.js"></script>  
@@ -26,18 +31,29 @@
   <script type="text/javascript" src="core.js"></script>
   <script type="text/javascript" src="graphService.js"></script>
   <div class="container">
-    <div class="jumbotron">
-      <div ng-controller="StockCtrl">
-        <svg id="visualisation" width="1000" height="500"></svg>
-        
-        <input type="text" class="form-control" ng-model="newStock">
-        <a class="btn btn-primary" ng-click="addStock()">Add stock</a>
-  
+    <div ng-controller="StockCtrl">
+      <svg id="visualisation" width="1000" height="500"></svg>
+
+      <div class="row">
         <div ng-repeat="stock in stocks">
-          <div>
-            {{ stock }}
-            <a class="btn btn-warning" ng-click="removeStock(stock)"></a>
+          <div class="stock col-md-4">
+            <div class="clearfix">
+              <div class="pull-left stock-color" style="background-color: {{stock.color}}"></div>
+              <div class="pull-left stock-name">
+                <span>{{ stock.name }}</span>
+              </div>
+              <div class="pull-left stock-destroy">
+                <a class="btn" ng-click="removeStock(stock)">
+                  <i class="fa fa-close"></i>
+                </a>
+              </div>
+            </div>
           </div>
+        </div>
+
+        <div class="col-md-4">
+          <input type="text" class="form-control" ng-model="newStock">
+          <a class="btn btn-primary" ng-click="addStock()">Add stock</a>
         </div>
       </div>
     </div>
