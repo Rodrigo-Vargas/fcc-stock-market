@@ -23,6 +23,7 @@ angular
       },
       clear: function(){
         vis.selectAll('.line').remove();
+        stockValues = [];
       },
       add: function(stock, color){
         stock.values.forEach(function(value){

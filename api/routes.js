@@ -24,7 +24,7 @@ module.exports = function (app) {
                     name : '',
                     values : []
       };
-      
+
       stockData.name = quandlData.dataset.dataset_code;
       quandlData.dataset.data.forEach(function(stock){
         var newStockValue = {

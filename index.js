@@ -3,6 +3,7 @@ var express   = require('express'),
 
 var app       = express();
 var routes    = require('./api/routes.js');
+var Helpers   = require('./api/Helpers.js')
 require('dotenv').config();
 
 app.use(express.static(__dirname + '/app'));
@@ -15,11 +16,11 @@ server.listen(3000);
 var stockList = [
                   {
                     name : 'FB',
-                    color : '#a1a1a1',
+                    color : Helpers.generateColor(),
                   },
                   {
                     name : 'TSLA',
-                    color : '#b2b2b2',
+                    color : Helpers.generateColor(),
                   } 
                   ];
 
@@ -30,14 +31,17 @@ io.on('connection', function (socket) {
 
   socket.on('addStock', function (data) {
     if (stockList.indexOf(data) == -1)
-      stockList.push(data);
+      stockList.push({
+                        name : data,
+                        color : Helpers.generateColor(),
+                      });
 
     socket.emit('stockList', stockList);    
   });
 
   socket.on('removeStock', function (data) {
-    var updatedStocks = stockList.filter(function(stock) { return stock != data; });
-
+    var updatedStocks = stockList.filter(function(stock) { return stock.name != data.name; });
+    
     stockList = updatedStocks;
 
     socket.emit('stockList', stockList);    
