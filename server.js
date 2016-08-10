@@ -4,6 +4,7 @@ var express   = require('express'),
 var app       = express();
 var routes    = require('./api/routes.js');
 var Helpers   = require('./api/helpers.js')
+var port       = process.env.PORT || 3000;
 require('dotenv').config();
 
 app.use(express.static(__dirname + '/app'));
@@ -11,7 +12,7 @@ app.use(express.static(__dirname + '/app'));
 routes(app);
 
 var server = http.createServer(app);
-server.listen(3000);
+server.listen(port);
 
 var stockList = [
                   {
