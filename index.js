@@ -36,7 +36,8 @@ io.on('connection', function (socket) {
                         color : Helpers.generateColor(),
                       });
 
-    socket.emit('stockList', stockList);    
+    socket.emit('stockList', stockList);
+    socket.broadcast.emit('stockList', stockList);
   });
 
   socket.on('removeStock', function (data) {
@@ -44,6 +45,7 @@ io.on('connection', function (socket) {
     
     stockList = updatedStocks;
 
-    socket.emit('stockList', stockList);    
+    socket.emit('stockList', stockList);
+    socket.broadcast.emit('stockList', stockList);
   });
 }); 

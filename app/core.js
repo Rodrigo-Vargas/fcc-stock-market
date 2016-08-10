@@ -27,7 +27,6 @@ angular
     };
   })  
   .controller('StockCtrl', function($scope, socket, graph, $http){
-    graph.init();
     $scope.stocks = [];
     
     $scope.addStock = function() {
@@ -63,7 +62,8 @@ angular
           function successCallback(response) 
           {
             var color = $scope.getColor(response.data.name);
-            graph.add(response.data, color);            
+            graph.addStock(stock.name, response.data.values, color);
+            graph.build();
           },
           function errorCallback(response) {
             alert(response.data);

@@ -9,6 +9,7 @@
 
   <link href="http://getbootstrap.com/examples/justified-nav/justified-nav.css" rel="stylesheet">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
+  <link rel="stylesheet" href="c3.min.css">
   <style>
       .axis path {
           fill: none;
@@ -26,13 +27,14 @@
       }
   </style>
   <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
-  <script src="//d3js.org/d3.v3.min.js"></script>  
+  <script src="//d3js.org/d3.v3.min.js"></script>
+  <script type="text/javascript" src="c3.min.js"></script> 
   <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular.min.js"></script>
   <script type="text/javascript" src="core.js"></script>
   <script type="text/javascript" src="graphService.js"></script>
   <div class="container">
     <div ng-controller="StockCtrl">
-      <svg id="visualisation" width="1000" height="500"></svg>
+      <div id="chart"></div>
 
       <div class="row">
         <div ng-repeat="stock in stocks">
