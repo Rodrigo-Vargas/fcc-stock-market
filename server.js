@@ -3,7 +3,7 @@ var express   = require('express'),
 
 var app       = express();
 var routes    = require('./api/routes.js');
-var Helpers   = require('./api/Helpers.js')
+var Helpers   = require('./api/helpers.js')
 require('dotenv').config();
 
 app.use(express.static(__dirname + '/app'));
